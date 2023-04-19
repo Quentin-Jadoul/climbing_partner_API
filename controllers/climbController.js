@@ -2,18 +2,40 @@ const db = require('../models/index.js')
 
 // Add a new climb
 exports.createClimb = function(req, res) {
-    db.climb.create({
-        nb_attempts: req.body.nb_attempts,
-        nb_success: req.body.nb_success,
-        style: req.body.style,
-        boulder_id: req.body.boulder_id,
-        activity_id: req.body.activity_id,
+    db.boulder.findOne({
+        where: {
+            boulder_id: req.body.boulder_id
+        }
     })
-    .then(function (climb) {
-        if (!climb) {
-            return res.status(404).send({ message: "Climb not found" });
+    .then(function (boulder) {
+        if (boulder) {
+            db.activity.findOne({
+                where: {
+                    activity_id: req.body.activity_id
+                }
+            })
+            .then(function (activity) {
+                if (activity) {
+                    db.climb.create({
+                        nb_attempts: req.body.nb_attempts,
+                        nb_success: req.body.nb_success,
+                        style: req.body.style,
+                        boulder_id: req.body.boulder_id,
+                        activity_id: req.body.activity_id,
+                    })
+                    .then(function (climb) {
+                        if (!climb) {
+                            return res.status(404).send({ message: "Climb not found" });
+                        } else {
+                            return res.status(200).send(climb);
+                        }
+                    })
+                } else {
+                    return res.status(404).send({ message: "Activity not found" });
+                }
+            })
         } else {
-            return res.status(200).send(climb);
+            return res.status(404).send({ message: "Boulder not found" });
         }
     })
 }
@@ -80,22 +102,44 @@ exports.getClimb = function(req, res) {
 
 // Update a climb by id
 exports.updateClimb = function(req, res) {
-    db.climb.update({
-        nb_attempts: req.body.nb_attempts,
-        nb_success: req.body.nb_success,
-        style: req.body.style,
-        boulder_id: req.body.boulder_id,
-        activity_id: req.body.activity_id,
-    }, {
+    db.boulder.findOne({
         where: {
-            climb_id: req.params.id
+            boulder_id: req.body.boulder_id
         }
     })
-    .then(function (climb) {
-        if (!climb) {
-            return res.status(404).send({ message: "Climb not found" });
+    .then(function (boulder) {
+        if (boulder) {
+            db.activity.findOne({
+                where: {
+                    activity_id: req.body.activity_id
+                }
+            })
+            .then(function (activity) {
+                if (activity) {
+                    db.climb.update({
+                        nb_attempts: req.body.nb_attempts,
+                        nb_success: req.body.nb_success,
+                        style: req.body.style,
+                        boulder_id: req.body.boulder_id,
+                        activity_id: req.body.activity_id,
+                    }, {
+                        where: {
+                            climb_id: req.params.id
+                        }
+                    })
+                    .then(function (climb) {
+                        if (!climb) {
+                            return res.status(404).send({ message: "Climb not found" });
+                        } else {
+                            return res.status(200).send(climb);
+                        }
+                    })
+                } else {
+                    return res.status(404).send({ message: "Activity not found" });
+                }
+            })
         } else {
-            return res.status(200).send(climb);
+            return res.status(404).send({ message: "Boulder not found" });
         }
     })
 }

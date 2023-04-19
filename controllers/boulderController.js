@@ -2,19 +2,30 @@ const db = require('../models/index.js')
 
 // Add a new boulder
 exports.createBoulder = function(req, res) {
-    db.boulder.create({
-        name: req.body.name,
-        place_id: req.body.place_id,
-        grade: req.body.grade,
-        status: req.body.status,
-        type: req.body.type,
-        image: req.body.image
+    db.place.findOne({
+        where: {
+            place_id: req.body.place_id
+        }
     })
-    .then(function (boulder) {
-        if (!boulder) {
-            return res.status(404).send({ message: "Boulder not found" });
+    .then(function (place) {
+        if (place) {
+            db.boulder.create({
+                name: req.body.name,
+                place_id: req.body.place_id,
+                grade: req.body.grade,
+                status: req.body.status,
+                type: req.body.type,
+                image: req.body.image
+            })
+            .then(function (boulder) {
+                if (!boulder) {
+                    return res.status(404).send({ message: "Boulder not found" });
+                } else {
+                    return res.status(200).send(boulder);
+                }
+            })
         } else {
-            return res.status(200).send(boulder);
+            return res.status(404).send({ message: "Place not found" });
         }
     })
 }
@@ -68,24 +79,35 @@ exports.getBoulder = function(req, res) {
 
 // Update a boulder by id
 exports.updateBoulder = function(req, res) {
-    db.boulder.update({
-        name: req.body.name,
-        location: req.body.location,
-        grade: req.body.grade,
-        description: req.body.description,
-        status: req.body.status,
-        type: req.body.type,
-        image: req.body.image
-    }, {
+    db.place.findOne({
         where: {
-            boulder_id: req.params.id
+            place_id: req.body.place_id
         }
     })
-    .then(function (boulder) {
-        if (!boulder) {
-            return res.status(404).send({ message: "Boulder not found" });
+    .then(function (place) {
+        if (place) {
+            db.boulder.update({
+                name: req.body.name,
+                location: req.body.location,
+                grade: req.body.grade,
+                description: req.body.description,
+                status: req.body.status,
+                type: req.body.type,
+                image: req.body.image
+            }, {
+                where: {
+                    boulder_id: req.params.id
+                }
+            })
+            .then(function (boulder) {
+                if (!boulder) {
+                    return res.status(404).send({ message: "Boulder not found" });
+                } else {
+                    return res.status(200).send(boulder);
+                }
+            })
         } else {
-            return res.status(200).send(boulder);
+            return res.status(404).send({ message: "Place not found" });
         }
     })
 }

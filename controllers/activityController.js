@@ -2,18 +2,29 @@ const db = require('../models/index.js')
 
 // Add a new activity
 exports.createActivity = function(req, res) {
-    db.activity.create({
-        name: req.body.name,
-        description: req.body.description,
-        user_id: req.body.user_id,
-        date: req.body.date,
-        duration: req.body.duration
+    db.user.findOne({
+        where: {
+            user_id: req.body.user_id
+        }
     })
-    .then(function (activity) {
-        if (!activity) {
-            return res.status(404).send({ message: "Activity not found" });
+    .then(function (user) {
+        if (user) {
+            db.activity.create({
+                name: req.body.name,
+                description: req.body.description,
+                user_id: req.body.user_id,
+                date: req.body.date,
+                duration: req.body.duration
+            })
+            .then(function (activity) {
+                if (!activity) {
+                    return res.status(404).send({ message: "Activity not found" });
+                } else {
+                    return res.status(200).send(activity);
+                }
+            })
         } else {
-            return res.status(200).send(activity);
+            return res.status(404).send({ message: "User not found" });
         }
     })
 }
@@ -64,22 +75,33 @@ exports.getActivity = function(req, res) {
 
 // Update a activity by id
 exports.updateActivity = function(req, res) {
-    db.activity.update({
-        name: req.body.name,
-        description: req.body.description,
-        user_id: req.body.user_id,
-        date: req.body.date,
-        duration: req.body.duration,
-    }, {
+    db.user.findOne({
         where: {
-            activity_id: req.params.id
+            user_id: req.body.user_id
         }
     })
-    .then(function (activity) {
-        if (!activity) {
-            return res.status(404).send({ message: "Activity not found" });
+    .then(function (user) {
+        if (user) {
+            db.activity.update({
+                name: req.body.name,
+                description: req.body.description,
+                user_id: req.body.user_id,
+                date: req.body.date,
+                duration: req.body.duration,
+            }, {
+                where: {
+                    activity_id: req.params.id
+                }
+            })
+            .then(function (activity) {
+                if (!activity) {
+                    return res.status(404).send({ message: "Activity not found" });
+                } else {
+                    return res.status(200).send(activity);
+                }
+            })
         } else {
-            return res.status(200).send(activity);
+            return res.status(404).send({ message: "User not found" });
         }
     })
 }
