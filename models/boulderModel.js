@@ -1,8 +1,8 @@
 const Sequelize = require('sequelize')
 const sequelize = require('../database.js')
 
-const Activity = sequelize.define('activity', {
-    activity_id: {
+const Boulder = sequelize.define('boulder', {
+    boulder_id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true,
@@ -12,22 +12,22 @@ const Activity = sequelize.define('activity', {
         type: Sequelize.STRING,
         allowNull: false
     },
-    description: {
+    grade: {
         type: Sequelize.STRING,
-        allowNull: true
+        allowNull: false
     },
-    user_id: {
+    status: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
+    },
+    place_id: {
         type: Sequelize.INTEGER,
         foreignKey: true,
         allowNull: false
     },
-    date: {
-        type: Sequelize.DATE,
-        allowNull: false
-    },
-    duration: {
-        type: Sequelize.INTEGER,
-        allowNull: false
+    type: {
+        type: Sequelize.STRING,
+        allowNull: true
     },
     createdAt: {
         type: Sequelize.DATE,
@@ -38,5 +38,4 @@ const Activity = sequelize.define('activity', {
         allowNull: false
     }
 })
-module.exports = Activity
-
+module.exports = Boulder

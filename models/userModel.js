@@ -1,5 +1,5 @@
-const Sequelize = require('sequelize')
-const sequelize = require('../database.js')
+const Sequelize = require('sequelize');
+const sequelize = require('../database.js');
 
 const User = sequelize.define('user', {
     user_id: {
@@ -37,4 +37,4 @@ const User = sequelize.define('user', {
         allowNull: false
     }
 })
-module.exports = User
+module.exports = User;

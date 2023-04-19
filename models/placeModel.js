@@ -1,8 +1,8 @@
 const Sequelize = require('sequelize')
 const sequelize = require('../database.js')
 
-const Route = sequelize.define('route', {
-    route_id: {
+const Place = sequelize.define('place', {
+    place_id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true,
@@ -12,19 +12,11 @@ const Route = sequelize.define('route', {
         type: Sequelize.STRING,
         allowNull: false
     },
-    description: {
+    location: {
         type: Sequelize.STRING,
         allowNull: true
     },
-    grade: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
-    status: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false
-    },
-    location: {
+    type: {
         type: Sequelize.STRING,
         allowNull: false
     },
@@ -37,4 +29,4 @@ const Route = sequelize.define('route', {
         allowNull: false
     }
 })
-module.exports = Route
+module.exports = Place
