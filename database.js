@@ -1,11 +1,21 @@
 const { Sequelize } = require('sequelize');
+// const sequelize = new Sequelize(
+//     'climbing_partner',
+//     'root',
+//     'root', {
+//         dialect: 'mysql',
+//         dialectOptions: {
+//             host: 'localhost',
+//     }}
+// );
+
 const sequelize = new Sequelize(
     'climbing_partner',
-    'root',
+    'quentin',
     'root', {
         dialect: 'mysql',
         dialectOptions: {
-            host: 'localhost',
+            host: 'pat.infolab.ecam.be:63342'
     }}
 );
 
