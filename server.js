@@ -34,8 +34,8 @@ app.use(express.urlencoded({extended: true}));
 app.use('/', router)
 
 // Setup server port
-let port = 8000;
+let port = process.env.NODE_PORT | 3000;
 // Launch app to listen to specified port
 app.listen(port, function () {
-console.log('Server running on port ' + port);
+    console.log('Server running on port ' + port);
 });

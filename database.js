@@ -12,7 +12,7 @@ const { Sequelize } = require('sequelize');
 const sequelize = new Sequelize(
     'climbing_partner',
     'quentin',
-    'root', {
+    'quentin', {
         dialect: 'mysql',
         dialectOptions: {
             host: 'pat.infolab.ecam.be:63342'
