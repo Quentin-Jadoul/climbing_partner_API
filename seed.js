@@ -17,15 +17,15 @@ const generatePlaces = () => {
     return places;
 };
 
-db.sync({alter: true}).then((result) => {
-    console.log(result);
-})
-.catch((err) => {
-    console.log(err);
-});
 
 const seedDatabase = async () => {
     try {
+        await db.sync({alter: true}).then((result) => {
+            console.log(result);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
         const places = generatePlaces();
         await db.models.Place.bulkCreate(places); // Inserts fake data into the database
         console.log('Database seeded successfully!');
