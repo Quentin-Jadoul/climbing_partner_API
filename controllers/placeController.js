@@ -18,7 +18,11 @@ exports.createPlace = function(req, res) {
 
 // Retrieve a list of all places
 exports.getPlaces = function(req, res) {
-    db.place.findAll()
+    db.place.findAll({
+        order: [
+            ['name', 'ASC']
+        ]
+    })
     .then(function (places) {
         if (!places) {
             return res.status(404).send({ message: "Places not found" });
