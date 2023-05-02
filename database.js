@@ -15,7 +15,7 @@ const sequelize = new Sequelize(
     'quentin', {
         dialect: 'mysql',
         dialectOptions: {
-            host: 'localhost'
+            host: '127.0.0.1'
     }}
 );
 
