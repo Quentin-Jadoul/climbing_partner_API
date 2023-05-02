@@ -70,6 +70,14 @@ exports.getPlaces = function(req, res) {
     })
 }
 
+// Get the number of places
+exports.getPlacesCount = function(req, res) {
+    db.place.count()
+    .then(function (count) {
+        return res.status(200).send({ count });
+    })
+}
+
 // Retrieve a single place by id
 exports.getPlace = function(req, res) {
     db.place.findOne({
