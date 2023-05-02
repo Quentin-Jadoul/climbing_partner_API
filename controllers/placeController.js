@@ -1,4 +1,5 @@
 const db = require('../models/index.js')
+const { Op } = require("sequelize")
 
 // Add a new place
 exports.createPlace = function(req, res) {
@@ -18,39 +19,55 @@ exports.createPlace = function(req, res) {
 
 // Retrieve a list of all places, as optionnal parameters you can specify the order, the limit and the offset, the type and search by location
 exports.getPlaces = function(req, res) {
-    const { limit, offset, type, location, sort } = req.query;
+    const { sort, type, location, size, offset } = req.query
 
-    // define where clause to filter by type and location
-    const where = {};
+    // Filters
+    const filters = {}
+    // By default, order by name ASC
+    let order = [['name', 'ASC']]
+    if (sort) {
+        switch (sort) {
+            case 'name':
+                order = [['name', 'ASC']]
+                break
+            case 'location':
+                order = [['location', 'ASC']]
+                break
+            case 'type':
+                order = [['type', 'ASC']]
+                break
+            default:
+                order = [['name', 'ASC']]
+        }
+    }
+
     if (type) {
-        where.type = type;
-    }
-    if (location) {
-        where.location = { [Op.like]: `%${location}%` };
+        filters.type = type
     }
 
-    // define order clause to sort by name or location
-    let order = [['name', 'ASC']];
-    if (sort === 'location') {
-        order = [['location', 'ASC']];
+    if (location) {
+        // search by part of the location
+        filters.location = { [Op.like]: `%${location}%` }
     }
 
     db.place.findAll({
-        where,
         order,
-        limit,
-        offset
+        where: filters
     })
     .then(function (places) {
-        if (!places || places.length === 0) {
+        if (!places) {
             return res.status(404).send({ message: "Places not found" });
         } else {
+            if (size && size > 0) {
+                if (offset && offset > 0) {
+                    return res.status(200).send(places.slice(offset * size + 1, offset * size + size));
+                } else {
+                    return res.status(200).send(places.slice(0, size));
+                }
+            }
             return res.status(200).send(places);
         }
     })
-    .catch(function (error) {
-        return res.status(500).send({ message: "Error retrieving places", error });
-    });
 }
 
 // Retrieve a single place by id
