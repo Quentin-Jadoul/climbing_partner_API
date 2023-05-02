@@ -16,20 +16,41 @@ exports.createPlace = function(req, res) {
     })
 }
 
-// Retrieve a list of all places
+// Retrieve a list of all places, as optionnal parameters you can specify the order, the limit and the offset, the type and search by location
 exports.getPlaces = function(req, res) {
+    const { limit, offset, type, location, sort } = req.query;
+
+    // define where clause to filter by type and location
+    const where = {};
+    if (type) {
+        where.type = type;
+    }
+    if (location) {
+        where.location = { [Op.like]: `%${location}%` };
+    }
+
+    // define order clause to sort by name or location
+    let order = [['name', 'ASC']];
+    if (sort === 'location') {
+        order = [['location', 'ASC']];
+    }
+
     db.place.findAll({
-        order: [
-            ['name', 'ASC']
-        ]
+        where,
+        order,
+        limit,
+        offset
     })
     .then(function (places) {
-        if (!places) {
+        if (!places || places.length === 0) {
             return res.status(404).send({ message: "Places not found" });
         } else {
             return res.status(200).send(places);
         }
     })
+    .catch(function (error) {
+        return res.status(500).send({ message: "Error retrieving places", error });
+    });
 }
 
 // Retrieve a single place by id
