@@ -1,23 +1,26 @@
-// Import express
-let express = require('express');
+const express = require('express');
+const cors = require('cors');
+const session = require('express-session');
+const Sequelize = require('sequelize');
+const db = require('./database.js');
+const router = require('./routes');
 
 // Initialize the app
 let app = express();
 
+// Middleware
+app.use(cors());
 app.use(express.json());
-
-let session = require('express-session');
-
 app.use(session({
     secret: 'my secret',
     resave: false,
     saveUninitialized: true
 }));
+app.use(express.static('public'));
+app.use(express.urlencoded({extended: true}));
+app.use('/', router)
 
-const Sequelize = require('sequelize');
-const db = require('./database.js');
-
-// Creating all the tables in the database
+// Sync the db
 db.sync({alter: true}).then((result) => {
     console.log(result);
 })
@@ -25,17 +28,10 @@ db.sync({alter: true}).then((result) => {
     console.log(err);
 });
 
-let router = require('./routes');
-//setting middleware
-app.use(express.static('public'));
-
-app.use(express.urlencoded({extended: true}));
-// Send message for default URL
-app.use('/', router)
-
 // Setup server port
 let port = process.env.NODE_PORT | 3000;
-// Launch app to listen to specified port
+
+// Start server
 app.listen(port, function () {
     console.log('Server running on port ' + port);
 });
