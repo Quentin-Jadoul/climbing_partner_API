@@ -19,7 +19,7 @@ exports.createPlace = function(req, res) {
 
 // Retrieve a list of all places, as optionnal parameters you can specify the order, the limit and the offset, the type and search by location
 exports.getPlaces = function(req, res) {
-    const { sort, type, location, size, offset } = req.query
+    const { sort, type, name, location, size, offset } = req.query
 
     const filters = {}
     const offset_int = Number(offset)
@@ -47,8 +47,10 @@ exports.getPlaces = function(req, res) {
     }
 
     if (location) {
-        // search by part of the location
         filters.location = { [Op.like]: `%${location}%` }
+    }
+    if (name) {
+        filters.name = { [Op.like]: `%${name}%` }
     }
 
     db.place.findAll({
