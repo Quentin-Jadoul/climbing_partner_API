@@ -21,8 +21,9 @@ exports.createPlace = function(req, res) {
 exports.getPlaces = function(req, res) {
     const { sort, type, location, size, offset } = req.query
 
-    // Filters
     const filters = {}
+    const offset_int = Number(offset)
+    const size_int = Number(size)
     // By default, order by name ASC
     let order = [['name', 'ASC']]
     if (sort) {
@@ -58,11 +59,11 @@ exports.getPlaces = function(req, res) {
         if (!places) {
             return res.status(404).send({ message: "Places not found" });
         } else {
-            if (size && size > 0) {
-                if (offset && offset > 0) {
-                    return res.status(200).send(places.slice(offset * size + 1, offset * size + size));
+            if (size_int && size_int > 0) {
+                if (offset_int && offset_int > 0) {
+                    return res.status(200).send(places.slice(size_int * offset_int, size_int * offset_int + size_int));
                 } else {
-                    return res.status(200).send(places.slice(0, size));
+                    return res.status(200).send(places.slice(0, size_int));
                 }
             }
             return res.status(200).send(places);
