@@ -66,8 +66,9 @@ const seedDatabase = async () => {
         // we create the database schema
         await db.sync({ alter: true });
         const places = generatePlaces();
-        console.log(places[0]);
+        const boulders = generateBoulders();
         await Place.bulkCreate(places); // Inserts fake data into the database
+        await Boulder.bulkCreate(boulders); // Inserts fake data into the database
         console.log('Database seeded successfully!');
     } catch (error) {
         console.error('Error seeding database:', error);
