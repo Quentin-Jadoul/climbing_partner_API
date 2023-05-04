@@ -170,12 +170,8 @@ exports.getBouldersCountByPlace = function(req, res) {
             ...filters
         }
     })
-    .then(function (boulders) {
-        if (!boulders) {
-            return res.status(404).send({ message: "Boulders not found" });
-        } else {
-            return res.status(200).send( { count });
-        }
+    .then(function (count) {
+        return res.status(200).send({ count });
     })
 }
 
