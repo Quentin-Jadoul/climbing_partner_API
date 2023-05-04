@@ -40,8 +40,30 @@ const generatePlaces = () => {
 //     return users;
 // };
 
+// Create 1000 boulders
+const NUM_BOULDERS = 1000;
+
+const generateBoulders = () => {
+    const boulders = [];
+    for (let i = 0; i < 1000; i++) {
+        let boulder = {
+            name: faker.random.words(),
+            grade: faker.random.arrayElement(['3', '3+', '4', '4+', '5', '5+', '6A', '6A+', '6B', '6B+', '6C', '6C+', '7A', '7A+', '7B', '7B+', '7C', '7C+', '8A', '8A+', '8B', '8B+', '8C', '8C+', '9A']),
+            status: faker.random.boolean(),
+            type: faker.random.arrayElement(['slab', 'vertical', 'overhang', 'roof']),
+            // we need to add the place_id from existing places
+            place_id: faker.random.number({ min: 1, max: 100 }),
+        };
+        boulders.push(boulder);
+    }
+    return boulders;
+};
+
 const seedDatabase = async () => {
     try {
+        // we drop the database if it already exists
+        await db.drop();
+        // we create the database schema
         await db.sync({ alter: true });
         const places = generatePlaces();
         console.log(places[0]);
