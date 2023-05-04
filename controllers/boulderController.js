@@ -110,13 +110,13 @@ exports.getBouldersByPlace = function(req, res) {
         filters.status = status
     }
     if (minGradeValue && maxGradeValue) {
-        filters.grade = { [Op.between]: [minGradeValue, maxGradeValue] }
+        filters.grade_int = { [Op.between]: [minGradeValue, maxGradeValue] }
     } else {
         if (minGradeValue) {
-            filters.grade = { [Op.gte]: minGradeValue }
+            filters.grade_int = { [Op.gte]: minGradeValue }
         }
         if (maxGradeValue) {
-            filters.grade = { [Op.lte]: maxGradeValue }
+            filters.grade_int = { [Op.lte]: maxGradeValue }
         }
     }
     db.boulder.findAll({
