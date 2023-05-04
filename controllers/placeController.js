@@ -75,7 +75,21 @@ exports.getPlaces = function(req, res) {
 
 // Get the number of places
 exports.getPlacesCount = function(req, res) {
-    db.place.count()
+    const { type, name, location } = req.query
+
+    const filters = {}
+    if (type) {
+        filters.type = type
+    }
+    if (location) {
+        filters.location = { [Op.like]: `%${location}%` }
+    }
+    if (name) {
+        filters.name = { [Op.like]: `%${name}%` }
+    }
+    db.place.count({
+        where: filters
+    })
     .then(function (count) {
         return res.status(200).send({ count });
     })
