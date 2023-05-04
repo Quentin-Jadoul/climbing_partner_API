@@ -16,6 +16,10 @@ const Boulder = sequelize.define('boulder', {
         type: Sequelize.STRING,
         allowNull: false
     },
+    grade_int: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+    },
     status: {
         type: Sequelize.BOOLEAN,
         allowNull: false

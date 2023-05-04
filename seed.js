@@ -43,12 +43,42 @@ const generatePlaces = () => {
 // Create 1000 boulders
 const NUM_BOULDERS = 1000;
 
+const GRADE_VALUES = {
+    '3': 1,
+    '3+': 2,
+    '4': 3,
+    '4+': 4,
+    '5': 5,
+    '5+': 6,
+    '6A': 7,
+    '6A+': 8,
+    '6B': 9,
+    '6B+': 10,
+    '6C': 11,
+    '6C+': 12,
+    '7A': 13,
+    '7A+': 14,
+    '7B': 15,
+    '7B+': 16,
+    '7C': 17,
+    '7C+': 18,
+    '8A': 19,
+    '8A+': 20,
+    '8B': 21,
+    '8B+': 22,
+    '8C': 23,
+    '8C+': 24,
+    '9A': 25,
+  };
+
 const generateBoulders = () => {
     const boulders = [];
     for (let i = 0; i < 1000; i++) {
+        let grade = faker.random.arrayElement(['3', '3+', '4', '4+', '5', '5+', '6A', '6A+', '6B', '6B+', '6C', '6C+', '7A', '7A+', '7B', '7B+', '7C', '7C+', '8A', '8A+', '8B', '8B+', '8C', '8C+', '9A']);
         let boulder = {
             name: faker.random.words(),
-            grade: faker.random.arrayElement(['3', '3+', '4', '4+', '5', '5+', '6A', '6A+', '6B', '6B+', '6C', '6C+', '7A', '7A+', '7B', '7B+', '7C', '7C+', '8A', '8A+', '8B', '8B+', '8C', '8C+', '9A']),
+            grade: grade,
+            grade_int: GRADE_VALUES[grade],
             status: faker.random.boolean(),
             type: faker.random.arrayElement(['slab', 'vertical', 'overhang', 'roof']),
             // we need to add the place_id from existing places

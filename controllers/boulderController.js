@@ -42,6 +42,7 @@ exports.createBoulder = function(req, res) {
                 name: req.body.name,
                 place_id: req.body.place_id,
                 grade: req.body.grade,
+                grade_int: GRADE_VALUES[req.body.grade],
                 status: req.body.status,
                 type: req.body.type,
                 image: req.body.image
@@ -155,13 +156,13 @@ exports.getBouldersCountByPlace = function(req, res) {
         filters.status = status
     }
     if (minGradeValue && maxGradeValue) {
-        filters.grade = { [Op.between]: [minGradeValue, maxGradeValue] }
+        filters.grade_int = { [Op.between]: [minGradeValue, maxGradeValue] }
     } else {
         if (minGradeValue) {
-            filters.grade = { [Op.gte]: minGradeValue }
+            filters.grade_int = { [Op.gte]: minGradeValue }
         }
         if (maxGradeValue) {
-            filters.grade = { [Op.lte]: maxGradeValue }
+            filters.grade_int = { [Op.lte]: maxGradeValue }
         }
     }
     db.boulder.count({
@@ -205,6 +206,7 @@ exports.updateBoulder = function(req, res) {
                 name: req.body.name,
                 location: req.body.location,
                 grade: req.body.grade,
+                grade_int: GRADE_VALUES[req.body.grade],
                 description: req.body.description,
                 status: req.body.status,
                 type: req.body.type,
