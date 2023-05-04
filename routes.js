@@ -20,6 +20,7 @@ router.get('/boulder/:id', boulderController.getBoulder);
 router.patch('/boulder/:id', boulderController.updateBoulder);
 router.delete('/boulder/:id', boulderController.deleteBoulder);
 router.get('/boulders/place/:id', boulderController.getBouldersByPlace);
+router.get('/boulders/place/:id/count', boulderController.getBouldersCountByPlace);
 
 // activities
 router.post('/activity', activityController.createActivity);
