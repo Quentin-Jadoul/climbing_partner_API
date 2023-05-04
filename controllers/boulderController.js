@@ -107,7 +107,7 @@ exports.getBouldersByPlace = function(req, res) {
         filters.type = type
     }
     if (status) {
-        filters.status = status
+        filters.status = status === 'true'
     }
     if (minGradeValue && maxGradeValue) {
         filters.grade_int = { [Op.between]: [minGradeValue, maxGradeValue] }
