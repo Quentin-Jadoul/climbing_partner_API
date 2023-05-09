@@ -13,7 +13,7 @@ const Activity = sequelize.define('activity', {
         allowNull: false
     },
     description: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: true
     },
     user_id: {
