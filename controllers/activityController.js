@@ -32,11 +32,14 @@ exports.createActivity = function(req, res) {
 // Retrieve a list of all activities
 exports.getActivities = function(req, res) {
     const { size, offset } = req.query
+    order = [['date', 'DESC']]
 
     const offset_int = Number(offset)
     const size_int = Number(size)
 
-    db.activity.findAll()
+    db.activity.findAll(
+        { order }
+    )
     .then(function (activities) {
         if (!activities) {
             return res.status(404).send({ message: "Activities not found" });
