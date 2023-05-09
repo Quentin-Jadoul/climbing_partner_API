@@ -102,7 +102,7 @@ const generateClimbs = () => {
             // we need to add the boulder_id from existing boulders
             boulder_id: faker.random.number({ min: 1, max: 1000 }),
             // we need to add the user_id from existing users
-            user_id: faker.random.number({ min: 1, max: 3 }),
+            activity_id: faker.random.number({ min: 1, max: 100 }),
         };
         climbs.push(climb);
     }
