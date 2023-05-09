@@ -97,7 +97,7 @@ const generateClimbs = () => {
     for (let i = 0; i < 100; i++) {
         let climb = {
             nb_attempts: faker.random.number({ min: 1, max: 10 }),
-            nb_success: faker.random.number({ min: 1, max: nb_attempts }),
+            nb_success: faker.random.number({ min: 1, max: 10 }),
             style: faker.random.arrayElement(['flash', 'redpoint', 'onsight', 'repeat', 'attempt']),
             // we need to add the boulder_id from existing boulders
             boulder_id: faker.random.number({ min: 1, max: 1000 }),
