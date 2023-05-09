@@ -46,6 +46,13 @@ exports.getActivities = function(req, res) {
     })
 }
 
+exports.getActivitiesCount = function(req, res) {
+    db.activity.count()
+    .then(function (count) {
+        return res.status(200).send({ count });
+    })
+}
+
 // Retrieve a list of all activities by user_id
 exports.getActivitiesByUser = function(req, res) {
     db.activity.findAll({

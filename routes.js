@@ -30,6 +30,7 @@ router.get('/activity/:id', activityController.getActivity);
 router.patch('/activity/:id', activityController.updateActivity);
 router.delete('/activity/:id', activityController.deleteActivity);
 router.get('/activities/user/:id', activityController.getActivitiesByUser);
+router.get('/activities/count', activityController.getActivitiesCountByUser);
 
 // climbs
 router.post('/climb', climbController.createClimb);
