@@ -33,8 +33,7 @@ exports.createActivity = function(req, res) {
 exports.getActivities = function(req, res) {
     const { size, offset } = req.query
 
-    // By default, order by date DESC
-    let order = [['date', 'DESC']]
+    let order = [['date', 'ASC']]
 
     const offset_int = Number(offset)
     const size_int = Number(size)
@@ -46,6 +45,13 @@ exports.getActivities = function(req, res) {
         if (!activities) {
             return res.status(404).send({ message: "Activities not found" });
         } else {
+            if (size_int && size_int > 0) {
+                if (offset_int && offset_int > 0) {
+                    return res.status(200).send(activities.slice(size_int * offset_int, size_int * offset_int + size_int));
+                } else {
+                    return res.status(200).send(activities.slice(0, size_int));
+                }
+            }
             return res.status(200).send(activities);
         }
     })
