@@ -89,6 +89,45 @@ const generateBoulders = () => {
     return boulders;
 };
 
+// Create 100 climbs
+const NUM_CLIMBS = 100;
+
+const generateClimbs = () => {
+    const climbs = [];
+    for (let i = 0; i < 100; i++) {
+        let climb = {
+            nb_attempts: faker.random.number({ min: 1, max: 10 }),
+            nb_success: faker.random.number({ min: 1, max: nb_attempts }),
+            style: faker.random.arrayElement(['flash', 'redpoint', 'onsight', 'repeat', 'attempt']),
+            // we need to add the boulder_id from existing boulders
+            boulder_id: faker.random.number({ min: 1, max: 1000 }),
+            // we need to add the user_id from existing users
+            user_id: faker.random.number({ min: 1, max: 3 }),
+        };
+        climbs.push(climb);
+    }
+    return climbs;
+};
+
+// Create 100 activities
+const NUM_ACTIVITIES = 100;
+
+const generateActivities = () => {
+    const activities = [];
+    for (let i = 0; i < 100; i++) {
+        let activity = {
+            name: faker.random.words(),
+            description: faker.lorem.paragraph(),
+            // we need to add the user_id from existing users
+            user_id: faker.random.number({ min: 1, max: 3 }),
+            date: faker.date.past(),
+            duration: faker.random.number({ min: 10, max: 240 }),
+        };
+        activities.push(activity);
+    }
+    return activities;
+};
+
 const seedDatabase = async () => {
     try {
         // we drop the database if it already exists
@@ -97,8 +136,12 @@ const seedDatabase = async () => {
         await db.sync({ alter: true });
         const places = generatePlaces();
         const boulders = generateBoulders();
+        const climbs = generateClimbs();
+        const activities = generateActivities();
         await Place.bulkCreate(places); // Inserts fake data into the database
         await Boulder.bulkCreate(boulders); // Inserts fake data into the database
+        await Climb.bulkCreate(climbs); // Inserts fake data into the database
+        await Activity.bulkCreate(activities); // Inserts fake data into the database
         console.log('Database seeded successfully!');
     } catch (error) {
         console.error('Error seeding database:', error);
