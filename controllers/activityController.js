@@ -32,7 +32,9 @@ exports.createActivity = function(req, res) {
 // Retrieve a list of all activities
 exports.getActivities = function(req, res) {
     const { size, offset } = req.query
-    order = [['date', 'ASC']]
+
+    // By default, order by date DESC
+    let order = [['date', 'DESC']]
 
     const offset_int = Number(offset)
     const size_int = Number(size)
