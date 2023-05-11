@@ -26,11 +26,11 @@ exports.createUser = async function(req, res) {
           return res.status(200).send(user);
         }
       } else if (!usernameAvailable && !emailAvailable) {
-        return res.status(409).send({ message: "Username and email already exist" });
+        return res.status(409).send({ message: "Username and email already exist" , usernameAvailable: usernameAvailable, emailAvailable: emailAvailable});
       } else if (!usernameAvailable) {
-        return res.status(409).send({ message: "Username already exists" });
+        return res.status(409).send({ message: "Username already exists", usernameAvailable: usernameAvailable, emailAvailable: emailAvailable });
       } else if (!emailAvailable) {
-        return res.status(409).send({ message: "Email already exists" });
+        return res.status(409).send({ message: "Email already exists", usernameAvailable: usernameAvailable, emailAvailable: emailAvailable });
       }
     } catch (error) {
       return res.status(500).send({ message: "Internal server error" });
