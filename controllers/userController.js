@@ -32,9 +32,9 @@ exports.checkUsername = function(req, res) {
     })
     .then(function (user) {
         if (!user) {
-            return res.status(200).send({ message: "Username is available" });
+            return res.status(200).send({ available: true });
         } else {
-            return res.status(404).send({ message: "Username is not available" });
+            return res.status(404).send({ available: false });
         }
     })
 }
@@ -48,9 +48,9 @@ exports.checkEmail = function(req, res) {
     })
     .then(function (user) {
         if (!user) {
-            return res.status(200).send({ message: "Email is available" });
+            return res.status(200).send({ available: true });
         } else {
-            return res.status(404).send({ message: "Email is not available" });
+            return res.status(404).send({ available: false });
         }
     })
 }
