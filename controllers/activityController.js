@@ -41,7 +41,7 @@ exports.getActivities = function(req, res) {
     db.activity.findAll(
         { 
             order,
-            include: db.user
+            include: db.user.username
         }
     )
     .then(function (activities) {
@@ -72,8 +72,7 @@ exports.getActivitiesByUser = function(req, res) {
     db.activity.findAll({
         where: {
             user_id: req.params.id
-        },
-        include: db.user
+        }
     })
     .then(function (activities) {
         if (!activities) {
@@ -97,7 +96,7 @@ exports.getActivity = function(req, res) {
         where: {
             activity_id: req.params.id
         },
-        include: db.user
+        include: db.user.username
     })
     .then(function (activity) {
         if (!activity) {
