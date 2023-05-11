@@ -5,38 +5,52 @@ const jwtKey = 'my_secret_key'
 const jwtExpirySeconds = 300
 
 
-// Create a user, first check if email or username already exists
+// Create a user
 exports.createUser = function(req, res) {
+    db.user.create({
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password,
+        firstname: req.body.firstname,
+        lastname: req.body.lastname
+    })
+    .then(function (user) {
+        if (!user) {
+            return res.status(404).send({ message: "User not found" });
+        } else {
+            return res.status(200).send(user);
+        }
+    })
+}
+
+// Check if username is available
+exports.checkUsername = function(req, res) {
     db.user.findOne({
         where: {
-            username: req.body.username
+            username: req.params.username
         }
     })
     .then(function (user) {
-        if (user) {
-            return res.status(409).send({ message: "Username already exists" });
+        if (!user) {
+            return res.status(200).send({ message: "Username is available" });
         } else {
-            db.user.findOne({
-                where: {
-                    email: req.body.email
-                }
-            })
-            .then(function (user) {
-                if (user) {
-                    return res.status(409).send({ message: "Email already exists" });
-                } else {
-                    db.user.create({
-                        username: req.body.username,
-                        email: req.body.email,
-                        password: req.body.password,
-                        firstname: req.body.firstname,
-                        lastname: req.body.lastname
-                    })
-                    .then(function (user) {
-                        return res.status(201).send(user);
-                    })
-                }
-            })
+            return res.status(404).send({ message: "Username is not available" });
+        }
+    })
+}
+
+// Check if email is available
+exports.checkEmail = function(req, res) {
+    db.user.findOne({
+        where: {
+            email: req.params.email
+        }
+    })
+    .then(function (user) {
+        if (!user) {
+            return res.status(200).send({ message: "Email is available" });
+        } else {
+            return res.status(404).send({ message: "Email is not available" });
         }
     })
 }
