@@ -6,60 +6,76 @@ const jwtExpirySeconds = 300
 
 
 // Create a user
-exports.createUser = function(req, res) {
-    if (isUsernameAvailable(req.body.username) && isEmailAvailable(req.body.email)) {
-        db.user.create({
-            username: req.body.username,
-            email: req.body.email,
-            password: req.body.password,
-            firstname: req.body.firstname,
-            lastname: req.body.lastname
-        })
-        .then(function (user) {
-            if (!user) {
-                return res.status(404).send({ message: "User not found" });
-            } else {
-                return res.status(200).send(user);
+exports.createUser = async function(req, res) {
+    try {
+      const usernameAvailable = await isUsernameAvailable(req.body.username);
+      const emailAvailable = await isEmailAvailable(req.body.email);
+  
+      if (usernameAvailable && emailAvailable) {
+        const user = await db.user.create({
+          username: req.body.username,
+          email: req.body.email,
+          password: req.body.password,
+          firstname: req.body.firstname,
+          lastname: req.body.lastname
+        });
+  
+        if (!user) {
+          return res.status(404).send({ message: "User not found" });
+        } else {
+          return res.status(200).send(user);
+        }
+      } else if (!usernameAvailable && !emailAvailable) {
+        return res.status(409).send({ message: "Username and email already exist" });
+      } else if (!usernameAvailable) {
+        return res.status(409).send({ message: "Username already exists" });
+      } else if (!emailAvailable) {
+        return res.status(409).send({ message: "Email already exists" });
+      }
+    } catch (error) {
+      return res.status(500).send({ message: "Internal server error" });
+    }
+  }
+
+function isEmailAvailable(email) {
+    return new Promise((resolve, reject) => {
+        db.user.findOne({
+            where: {
+                email: email
             }
         })
-    } else if (!isUsernameAvailable(req.body.username) && !isEmailAvailable(req.body.email)) {
-        return res.status(409).send({ message: "Username and email already exists" });
-    } else if (!isUsernameAvailable(req.body.username)) {
-        return res.status(409).send({ message: "Username already exists" });
-    } else if (!isEmailAvailable(req.body.email)) {
-        return res.status(409).send({ message: "Email already exists" });
-    }
+        .then((user) => {
+            if (!user) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        })
+        .catch((error) => {
+            reject(error);
+        });
+    });
 }
 
-isUsernameAvailable = function(username) {
-    db.user.findOne({
+function isUsernameAvailable(username) {
+    return new Promise((resolve, reject) => {
+      db.user.findOne({
         where: {
-            username: username
+          username: username
         }
-    })
-    .then(function (user) {
+      })
+      .then((user) => {
         if (!user) {
-            return true;
+          resolve(true);
         } else {
-            return false;
+          resolve(false);
         }
-    })
-}
-
-isEmailAvailable = function(email) {
-    db.user.findOne({
-        where: {
-            email: email
-        }
-    })
-    .then(function (user) {
-        if (!user) {
-            return true;
-        } else {
-            return false;
-        }
-    })
-}
+      })
+      .catch((error) => {
+        reject(error);
+      });
+    });
+  }
 
 // Get all users
 exports.getUsers = function(req, res) {
