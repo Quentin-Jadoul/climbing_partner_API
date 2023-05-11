@@ -163,3 +163,30 @@ exports.loginUser = function(req, res) {
         }
     })
 }
+
+// Authenticate a user
+exports.isAuthorized = function(req, res) {
+    const token = req.body.token;
+    if (!token) {
+        return res.status(401).send({ message: "No token provided" });
+    } else {
+        jwt.verify(token, jwtKey, function(err, decoded) {
+            if (err) {
+                return res.status(401).send({ message: "Unauthorized" });
+            } else {
+                db.user.findOne({
+                    where: {
+                        user_id: decoded.user_id
+                    }
+                })
+                .then(function (user) {
+                    if (!user) {
+                        return res.status(404).send({ message: "User not found" });
+                    } else {
+                        return res.status(200).send(user);
+                    }
+                })
+            }
+        })
+    }
+}

@@ -43,7 +43,7 @@ router.get('/climbs/boulder/:id', climbController.getClimbsByBoulder);
 
 // places
 router.post('/place', placeController.createPlace);
-router.get('/places', placeController.getPlaces);
+router.get('/places', isAuthorized, placeController.getPlaces);
 router.get('/place/:id', placeController.getPlace);
 router.patch('/place/:id', placeController.updatePlace);
 router.delete('/place/:id', placeController.deletePlace);
