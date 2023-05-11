@@ -7,26 +7,28 @@ const jwtExpirySeconds = 300
 
 // Create a user
 exports.createUser = function(req, res) {
-    db.user.create({
-        username: req.body.username,
-        email: req.body.email,
-        password: req.body.password,
-        firstname: req.body.firstname,
-        lastname: req.body.lastname
-    })
-    .then(function (user) {
-        if (isUsernameAvailable(user.username) && isEmailAvailable(user.email)) {
-            return res.status(201).send(user);
-        } else {
-            if (!isUsernameAvailable(user.username) && !isEmailAvailable(user.email)) {
-                return res.status(409).send({ error: "Username and email already in use", usernameTaken: true, emailTaken: true });
-            } else if (!isUsernameAvailable(user.username)) {
-                return res.status(409).send({ error: "Username already in use", usernameTaken: true, emailTaken: false });
+    if (isUsernameAvailable(req.body.username) && isEmailAvailable(req.body.email)) {
+        db.user.create({
+            username: req.body.username,
+            email: req.body.email,
+            password: req.body.password,
+            firstname: req.body.firstname,
+            lastname: req.body.lastname
+        })
+        .then(function (user) {
+            if (!user) {
+                return res.status(404).send({ message: "User not found" });
             } else {
-                return res.status(409).send({ error: "Email already in use", usernameTaken: false, emailTaken: true });
+                return res.status(200).send(user);
             }
-        }
-    })
+        })
+    } else if (!isUsernameAvailable(req.body.username) && !isEmailAvailable(req.body.email)) {
+        return res.status(409).send({ message: "Username and email already exists" });
+    } else if (!isUsernameAvailable(req.body.username)) {
+        return res.status(409).send({ message: "Username already exists" });
+    } else if (!isEmailAvailable(req.body.email)) {
+        return res.status(409).send({ message: "Email already exists" });
+    }
 }
 
 isUsernameAvailable = function(username) {
