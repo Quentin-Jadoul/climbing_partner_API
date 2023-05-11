@@ -5,20 +5,38 @@ const jwtKey = 'my_secret_key'
 const jwtExpirySeconds = 300
 
 
-
+// Create a user, first check if email or username already exists
 exports.createUser = function(req, res) {
-    db.user.create({
-        username: req.body.username,
-        email: req.body.email,
-        password: req.body.password,
-        firstname: req.body.firstname,
-        lastname: req.body.lastname
+    db.user.findOne({
+        where: {
+            username: req.body.username
+        }
     })
     .then(function (user) {
-        if (!user) {
-            return res.status(404).send({ message: "User not found" });
+        if (user) {
+            return res.status(409).send({ message: "Username already exists" });
         } else {
-            return res.status(200).send(user);
+            db.user.findOne({
+                where: {
+                    email: req.body.email
+                }
+            })
+            .then(function (user) {
+                if (user) {
+                    return res.status(409).send({ message: "Email already exists" });
+                } else {
+                    db.user.create({
+                        username: req.body.username,
+                        email: req.body.email,
+                        password: req.body.password,
+                        firstname: req.body.firstname,
+                        lastname: req.body.lastname
+                    })
+                    .then(function (user) {
+                        return res.status(201).send(user);
+                    })
+                }
+            })
         }
     })
 }
