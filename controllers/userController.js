@@ -15,42 +15,46 @@ exports.createUser = function(req, res) {
         lastname: req.body.lastname
     })
     .then(function (user) {
-        if (!user) {
-            return res.status(404).send({ message: "User not found" });
+        if (isUsernameAvailable(user.username) && isEmailAvailable(user.email)) {
+            return res.status(201).send(user);
         } else {
-            return res.status(200).send(user);
+            if (!isUsernameAvailable(user.username) && !isEmailAvailable(user.email)) {
+                return res.status(409).send({ error: "Username and email already in use", usernameTaken: true, emailTaken: true });
+            } else if (!isUsernameAvailable(user.username)) {
+                return res.status(409).send({ error: "Username already in use", usernameTaken: true, emailTaken: false });
+            } else {
+                return res.status(409).send({ error: "Email already in use", usernameTaken: false, emailTaken: true });
+            }
         }
     })
 }
 
-// Check if username is available
-exports.checkUsername = function(req, res) {
+isUsernameAvailable = function(username) {
     db.user.findOne({
         where: {
-            username: req.params.username
+            username: username
         }
     })
     .then(function (user) {
         if (!user) {
-            return res.status(200).send({ available: true });
+            return true;
         } else {
-            return res.status(404).send({ available: false });
+            return false;
         }
     })
 }
 
-// Check if email is available
-exports.checkEmail = function(req, res) {
+isEmailAvailable = function(email) {
     db.user.findOne({
         where: {
-            email: req.params.email
+            email: email
         }
     })
     .then(function (user) {
         if (!user) {
-            return res.status(200).send({ available: true });
+            return true;
         } else {
-            return res.status(404).send({ available: false });
+            return false;
         }
     })
 }
