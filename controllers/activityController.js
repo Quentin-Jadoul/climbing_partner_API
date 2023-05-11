@@ -39,7 +39,10 @@ exports.getActivities = function(req, res) {
     const size_int = Number(size)
 
     db.activity.findAll(
-        { order }
+        { 
+            order,
+            include: db.user
+        }
     )
     .then(function (activities) {
         if (!activities) {
@@ -69,7 +72,8 @@ exports.getActivitiesByUser = function(req, res) {
     db.activity.findAll({
         where: {
             user_id: req.params.id
-        }
+        },
+        include: db.user
     })
     .then(function (activities) {
         if (!activities) {
@@ -92,7 +96,8 @@ exports.getActivity = function(req, res) {
     db.activity.findOne({
         where: {
             activity_id: req.params.id
-        }
+        },
+        include: db.user
     })
     .then(function (activity) {
         if (!activity) {
