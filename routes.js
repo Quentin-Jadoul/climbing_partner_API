@@ -13,6 +13,8 @@ router.get('/user/:id', userController.getUser);
 router.patch('/user/:id', userController.updateUser);
 router.delete('/user/:id', userController.deleteUser);
 router.post('/user/login', userController.loginUser);
+router.get('/user/check/username/:username', userController.checkUsername);
+router.get('/user/check/email/:email', userController.checkEmail);
 
 // boulders
 router.post('/boulder', boulderController.createBoulder);
