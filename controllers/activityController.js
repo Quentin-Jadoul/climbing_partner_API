@@ -73,7 +73,15 @@ exports.getActivitiesCount = function(req, res) {
 
 // Retrieve a list of all activities by user_id
 exports.getActivitiesByUser = function(req, res) {
+    const { size, offset } = req.query
+
+    let order = [['date', 'ASC']]
+
+    const offset_int = Number(offset)
+    const size_int = Number(size)
+
     db.activity.findAll({
+        order,
         where: {
             user_id: req.params.id
         }
