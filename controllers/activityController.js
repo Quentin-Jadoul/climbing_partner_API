@@ -33,7 +33,7 @@ exports.createActivity = function(req, res) {
 exports.getActivities = function(req, res) {
     const { size, offset } = req.query
 
-    let order = [['date', 'ASC']]
+    let order = [['date', 'DESC']]
 
     const offset_int = Number(offset)
     const size_int = Number(size)
@@ -75,7 +75,7 @@ exports.getActivitiesCount = function(req, res) {
 exports.getActivitiesByUser = function(req, res) {
     const { size, offset, user_id } = req.query
 
-    let order = [['date', 'ASC']]
+    let order = [['date', 'DESC']]
 
     const offset_int = Number(offset)
     const size_int = Number(size)
