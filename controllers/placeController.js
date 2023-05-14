@@ -98,7 +98,8 @@ exports.getPlacesCount = function(req, res) {
 // Retrieve the names and ids of all places
 exports.getPlacesNames = function(req, res) {
     db.place.findAll({
-        attributes: ['place_id', 'name']
+        attributes: ['place_id', 'name'],
+        order: [['name', 'ASC']]
     })
     .then(function (places) {
         if (!places) {
