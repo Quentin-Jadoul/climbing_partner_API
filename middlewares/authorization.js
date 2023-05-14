@@ -20,7 +20,7 @@ exports.login = function(req, res) {
                 algorithm: 'HS256',
                 expiresIn: jwtExpirySeconds
             })
-            return res.status(200).send({ token: token });
+            return res.status(200).send({ token: token , user_id: user.user_id});
         }
     })
 }
