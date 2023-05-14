@@ -26,13 +26,14 @@ exports.login = function(req, res) {
 }
 
 // Authenticate a user
-exports.isAuthorized = function(req, res) {
+exports.isAuthorized = function(req, res, next) {
     if (typeof req.headers.authorization !== "undefined") {
         let token = req.headers.authorization.split(" ")[1];
         jwt.verify(token, jwtKey, (err, data) => {
             if (err) {
                 return res.status(403).send({ message: "Not authorized" });
             }
+            req.user = data;
             return next();
         });
     } else {
