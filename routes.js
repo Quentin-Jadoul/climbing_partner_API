@@ -30,7 +30,7 @@ router.get('/activities', activityController.getActivities);
 router.get('/activity/:id', activityController.getActivity);
 router.patch('/activity/:id', isAuthorized, activityController.updateActivity);
 router.delete('/activity/:id', isAuthorized, activityController.deleteActivity);
-router.get('/activities/user/:id', activityController.getActivitiesByUser);
+router.get('/activities/user', activityController.getActivitiesByUser);
 router.get('/activities/count', activityController.getActivitiesCount);
 
 // climbs
