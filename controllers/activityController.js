@@ -163,7 +163,7 @@ exports.deleteActivity = function(req, res) {
         if (!activity) {
             return res.status(404).send({ message: "Activity not found" });
         } else {
-            return res.sendStatus(200);
+            return res.status(200).send({ message: "Activity deleted" });
         }
     })
 }
