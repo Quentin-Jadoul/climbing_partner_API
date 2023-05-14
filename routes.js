@@ -49,6 +49,7 @@ router.get('/place/:id', placeController.getPlace);
 router.patch('/place/:id', placeController.updatePlace);
 router.delete('/place/:id', placeController.deletePlace);
 router.get('/places/count', placeController.getPlacesCount);
+router.get('/places/names', placeController.getPlacesNames);
 
 // Auth
 router.post('/login', login);

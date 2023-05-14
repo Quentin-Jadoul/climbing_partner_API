@@ -95,6 +95,20 @@ exports.getPlacesCount = function(req, res) {
     })
 }
 
+// Retrieve the names and ids of all places
+exports.getPlacesNames = function(req, res) {
+    db.place.findAll({
+        attributes: ['place_id', 'name']
+    })
+    .then(function (places) {
+        if (!places) {
+            return res.status(404).send({ message: "Places not found" });
+        } else {
+            return res.status(200).send(places);
+        }
+    })
+}
+
 // Retrieve a single place by id
 exports.getPlace = function(req, res) {
     db.place.findOne({
