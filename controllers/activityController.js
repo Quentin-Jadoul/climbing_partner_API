@@ -61,7 +61,11 @@ exports.getActivities = function(req, res) {
 }
 
 exports.getActivitiesCount = function(req, res) {
-    db.activity.count()
+    db.activity.count({
+        where: {
+            user_id: req.params.id
+        }
+    })
     .then(function (count) {
         return res.status(200).send({ count });
     })
