@@ -61,14 +61,21 @@ exports.getActivities = function(req, res) {
 }
 
 exports.getActivitiesCount = function(req, res) {
-    db.activity.count({
-        where: {
-            user_id: req.query.user_id
-        }
-    })
-    .then(function (count) {
-        return res.status(200).send({ count });
-    })
+    if (req.query.user_id) {
+        db.activity.count({
+            where: {
+                user_id: req.query.user_id
+            }
+        })
+        .then(function (count) {
+            return res.status(200).send({ count });
+        })
+    } else {
+        db.activity.count()
+        .then(function (count) {
+            return res.status(200).send({ count });
+        })
+    }
 }
 
 // Retrieve a list of all activities by user_id
