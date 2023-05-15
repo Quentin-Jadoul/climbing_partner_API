@@ -25,20 +25,20 @@ router.get('/boulders/place/:id', boulderController.getBouldersByPlace);
 router.get('/boulders/place/:id/count', boulderController.getBouldersCountByPlace);
 
 // activities
-router.post('/activity', isAuthorized, activityController.createActivity);
+router.post('/activity', activityController.createActivity);
 router.get('/activities', activityController.getActivities);
 router.get('/activity/:id', activityController.getActivity);
-router.patch('/activity/:id', isAuthorized, activityController.updateActivity);
-router.delete('/activity/:id', isAuthorized, activityController.deleteActivity);
+router.patch('/activity/:id', activityController.updateActivity);
+router.delete('/activity/:id', activityController.deleteActivity);
 router.get('/activities/user', activityController.getActivitiesByUser);
 router.get('/activities/count', activityController.getActivitiesCount);
 
 // climbs
-router.post('/climb', isAuthorized, climbController.createClimb);
+router.post('/climb', climbController.createClimb);
 router.get('/climbs', climbController.getClimbs);
 router.get('/climb/:id', climbController.getClimb);
-router.patch('/climb/:id', isAuthorized, climbController.updateClimb);
-router.delete('/climb/:id', isAuthorized, climbController.deleteClimb);
+router.patch('/climb/:id', climbController.updateClimb);
+router.delete('/climb/:id', climbController.deleteClimb);
 router.get('/climbs/activity/:id', climbController.getClimbsByActivity);
 router.get('/climbs/boulder/:id', climbController.getClimbsByBoulder);
 
