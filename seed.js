@@ -136,12 +136,12 @@ const seedDatabase = async () => {
         await db.sync({ alter: true });
         const places = generatePlaces();
         const boulders = generateBoulders();
-        const climbs = generateClimbs();
-        const activities = generateActivities();
+        // const climbs = generateClimbs();
+        // const activities = generateActivities();
         await Place.bulkCreate(places); // Inserts fake data into the database
         await Boulder.bulkCreate(boulders); // Inserts fake data into the database
-        await Activity.bulkCreate(activities); // Inserts fake data into the database
-        await Climb.bulkCreate(climbs); // Inserts fake data into the database
+        // await Activity.bulkCreate(activities); // Inserts fake data into the database
+        // await Climb.bulkCreate(climbs); // Inserts fake data into the database
         console.log('Database seeded successfully!');
     } catch (error) {
         console.error('Error seeding database:', error);
