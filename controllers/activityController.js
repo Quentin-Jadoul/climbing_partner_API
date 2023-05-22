@@ -41,7 +41,17 @@ exports.getActivities = function(req, res) {
     db.activity.findAll(
         { 
             order,
-            include: db.user
+            include:
+            [
+                {   
+                    model: db.user,
+                    attributes: ['user_id', 'firstname', 'lastname']
+                },
+                {
+                    model: db.place,
+                    attributes: ['place_id', 'name', 'location', 'type']
+                }
+            ]
         }
     )
     .then(function (activities) {
