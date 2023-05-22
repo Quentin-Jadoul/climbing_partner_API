@@ -57,6 +57,10 @@ exports.getClimbsByActivity = function(req, res) {
     db.climb.findAll({
         where: {
             activity_id: req.params.id
+        },
+        include: {
+            model: db.boulder,
+            attributes: ['place_id', 'grade']
         }
     })
     .then(function (climbs) {
