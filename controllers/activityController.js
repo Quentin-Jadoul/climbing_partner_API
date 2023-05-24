@@ -44,7 +44,7 @@ exports.getActivities = function(req, res) {
             include:
             {   
                 model: db.user,
-                attributes: ['user_id', 'firstname', 'lastname']
+                attributes: ['username', 'firstname', 'lastname']
             }
         }
     )
@@ -94,7 +94,7 @@ exports.getActivitiesByUser = function(req, res) {
     db.activity.findAll({
         order,
         where: {
-            user_id: req.query.user_id
+            user_id: user_id
         }
     })
     .then(function (activities) {
@@ -119,7 +119,10 @@ exports.getActivity = function(req, res) {
         where: {
             activity_id: req.params.id
         },
-        include: db.user
+        include: {   
+            model: db.user,
+            attributes: ['username', 'firstname', 'lastname']
+        }
     })
     .then(function (activity) {
         if (!activity) {

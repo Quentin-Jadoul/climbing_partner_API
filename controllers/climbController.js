@@ -18,7 +18,6 @@ exports.createClimb = function(req, res) {
                 if (activity) {
                     db.climb.create({
                         nb_attempts: req.body.nb_attempts,
-                        nb_success: req.body.nb_success,
                         style: req.body.style,
                         boulder_id: req.body.boulder_id,
                         activity_id: req.body.activity_id,
@@ -42,7 +41,12 @@ exports.createClimb = function(req, res) {
 
 // Retrieve a list of all climbs
 exports.getClimbs = function(req, res) {
-    db.climb.findAll()
+    db.climb.findAll({
+        include: {
+            model: db.boulder,
+            attributes: ['place_id', 'grade', 'grade_int']
+        }
+    })
     .then(function (climbs) {
         if (!climbs) {
             return res.status(404).send({ message: "Climbs not found" });
@@ -60,7 +64,7 @@ exports.getClimbsByActivity = function(req, res) {
         },
         include: {
             model: db.boulder,
-            attributes: ['place_id', 'grade']
+            attributes: ['place_id', 'grade', 'grade_int']
         }
     })
     .then(function (climbs) {
@@ -93,6 +97,10 @@ exports.getClimb = function(req, res) {
     db.climb.findOne({
         where: {
             climb_id: req.params.id
+        },
+        include: {
+            model: db.boulder,
+            attributes: ['place_id', 'grade', 'grade_int']
         }
     })
     .then(function (climb) {
@@ -122,7 +130,6 @@ exports.updateClimb = function(req, res) {
                 if (activity) {
                     db.climb.update({
                         nb_attempts: req.body.nb_attempts,
-                        nb_success: req.body.nb_success,
                         style: req.body.style,
                         boulder_id: req.body.boulder_id,
                         activity_id: req.body.activity_id,

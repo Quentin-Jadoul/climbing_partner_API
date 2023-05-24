@@ -12,10 +12,6 @@ const Climb = sequelize.define('climb', {
         type: Sequelize.INTEGER,
         allowNull: false
     },
-    nb_success: {
-        type: Sequelize.INTEGER,
-        allowNull: false
-    },
     style: {
         type: Sequelize.STRING,
         allowNull: false
