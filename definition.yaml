@@ -1,0 +1,1325 @@
+openapi: 3.0.0
+info:
+  version: '1.0'
+  title: 'Climbing partner API'
+  description: 'An API allowing the user to log his climbing activity.'
+servers:
+  - url: https://http://pat.infolab.ecam.be:60842
+    description: SwaggerHub API Auto Mocking
+paths:
+  /user:
+    post:
+      summary: Crée un nouvel utilisateur
+      tags: 
+        - user
+      description: Crée un nouvel utilisateur en vérifiant au préalable que l'adresse mail ainsi que le nom d'utilisateur n'est pas déjà utilisé.
+      requestBody:
+        description: Les informations de l'utilisateur.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '409':
+          description: L'adresse mail et/ou le nom d'utilisateur est déjà utilisé.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Username and email already exist."
+                  usernameAvailable:
+                    type: boolean
+                    example: false
+                  emailAvailable:
+                    type: boolean
+                    example: false
+        '500':
+          description: Erreur interne du serveur.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Erreur interne du serveur."
+  /users:
+    get:
+      summary: Récupère la liste des utilisateurs
+      tags: 
+        - user
+      description: Récupère la liste des utilisateurs.
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        '404':
+          description: Aucun utilisateur n'a été trouvé.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Users not found."
+  /user/{id}:
+    get:
+      summary: Récupère les informations d'un utilisateur
+      tags: 
+        - user
+      description: Récupère les informations d'un utilisateur.
+      parameters:
+        - name: id
+          in: path
+          description: L'ID de l'utilisateur à récupérer.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '404':
+          description: L'utilisateur n'a pas été trouvé.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User not found."
+    patch:
+      summary: Met à jour les informations d'un utilisateur
+      tags: 
+        - user
+      description: Met à jour les informations d'un utilisateur.
+      parameters:
+        - name: id
+          in: path
+          description: L'ID de l'utilisateur à mettre à jour.
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Les valeurs à mettre à jour.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '404':
+          description: L'utilisateur n'a pas été trouvé.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User not found."
+    delete:
+      summary: Supprime un utilisateur
+      tags: 
+        - user
+      description: Supprime un utilisateur.
+      parameters:
+        - name: id
+          in: path
+          description: L'ID de l'utilisateur à supprimer.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: OK.
+        '404':
+          description: L'utilisateur n'a pas été trouvé.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User not found."
+  /activity:
+    post:
+      summary: Crée une nouvelle activité
+      tags: 
+        - activity
+      description: Crée une nouvelle activité.
+      requestBody:
+        description: Les informations de l'activité.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Activity"
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Activity"
+        '404':
+          description: L'utilisateur n'a pas été trouvé.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User not found."
+# Récupère la liste des activités
+# Les parametres sont passés dans l'URL et sont les suivants :
+# - size : le nombre d'activités à récupérer
+# - offset : le nombre de groupe de "size" activités à sauter
+  /activities:
+    get:
+      summary: Récupère la liste des activités
+      tags: 
+        - activity
+      description: Récupère la liste des activités.
+      parameters:
+        - name: size
+          in: query
+          description: Le nombre d'activités à récupérer.
+          required: false
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: Le nombre de groupe de "size" activités à sauter.
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ActivityInclUser"
+        '404':
+          description: Aucune activité n'a été trouvée.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Activities not found."
+  /activity/{id}:
+    get:
+      summary: Récupère les informations d'une activité
+      tags: 
+        - activity
+      description: Récupère les informations d'une activité.
+      parameters:
+        - name: id
+          in: path
+          description: L'ID de l'activité à récupérer.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActivityInclUser"
+        '404':
+          description: L'activité n'a pas été trouvée.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Activity not found."
+    patch:
+      summary: Met à jour les informations d'une activité
+      tags: 
+        - activity
+      description: Met à jour les informations d'une activité.
+      parameters:
+        - name: id
+          in: path
+          description: L'ID de l'activité à mettre à jour.
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Les valeurs à mettre à jour.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Activity"
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Activity"
+        '404':
+          description: L'activité n'a pas été trouvée.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Activity not found."
+    delete:
+      summary: Supprime une activité
+      tags: 
+        - activity
+      description: Supprime une activité.
+      parameters:
+        - name: id
+          in: path
+          description: L'ID de l'activité à supprimer.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: OK.
+        '404':
+          description: L'activité n'a pas été trouvée.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Activity not found."
+  /activities/user/{id}:
+    get:
+      summary: Récupère la liste des activités d'un utilisateur
+      tags: 
+        - activity
+      description: Récupère la liste des activités d'un utilisateur.
+      parameters:
+        - name: id
+          in: path
+          description: L'ID de l'utilisateur.
+          required: true
+          schema:
+            type: integer
+        - name: size
+          in: query
+          description: Le nombre d'activités à récupérer.
+          required: false
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: Le nombre de groupe de "size" activités à sauter.
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ActivityInclUser"
+        '404':
+          description: Aucune activité n'a été trouvée.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Activities not found."
+  /activities/count:
+    get:
+      summary: Récupère le nombre d'activités
+      tags: 
+        - activity
+      description: Récupère le nombre d'activités.
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 10
+  /climb:
+    post:
+      summary: Crée une ascension
+      tags: 
+        - climb
+      description: Crée une ascension.
+      requestBody:
+        description: Les valeurs de l'ascension à créer.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Climb"
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Climb"
+        '404':
+          description: Le bloc ou l'activité associés n'ont pas été trouvés.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Activity not found."
+  /climbs:
+    get:
+      summary: Récupère la liste des ascensions
+      tags: 
+        - climb
+      description: Récupère la liste des ascensions.
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ClimbInclBoulder"
+        '404':
+          description: Aucune ascension n'a été trouvée.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Climbs not found."
+  /climbs/{id}:
+    get:
+      summary: Récupère une ascension
+      tags: 
+        - climb
+      description: Récupère une ascension.
+      parameters:
+        - name: id
+          in: path
+          description: L'ID de l'ascension à récupérer.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClimbInclBoulder"
+        '404':
+          description: L'ascension n'a pas été trouvée.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Climb not found."
+    patch:
+      summary: Met à jour les informations d'une ascension
+      tags: 
+        - climb
+      description: Met à jour les informations d'une ascension.
+      parameters:
+        - name: id
+          in: path
+          description: L'ID de l'ascension à mettre à jour.
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Les valeurs à mettre à jour.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Climb"
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Climb"
+        '404':
+          description: L'ascension n'a pas été trouvée.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Climb not found."
+    delete:
+      summary: Supprime une ascension
+      tags: 
+        - climb
+      description: Supprime une ascension.
+      parameters:
+        - name: id
+          in: path
+          description: L'ID de l'ascension à supprimer.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: OK.
+        '404':
+          description: L'ascension n'a pas été trouvée.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Climb not found."
+  /climbs/activity{id}:
+    get:
+      summary: Récupère la liste des ascensions d'une activité
+      tags: 
+        - climb
+      description: Récupère la liste des ascensions d'une activité.
+      parameters:
+        - name: id
+          in: path
+          description: L'ID de l'activité dont on veut récupérer les ascensions.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ClimbInclBoulder"
+        '404':
+          description: Aucune ascension n'a été trouvée pour cette activité.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Climbs not found."
+  /climbs/boulder{id}:
+    get:
+      summary: Récupère la liste des ascensions d'un bloc
+      tags: 
+        - climb
+      description: Récupère la liste des ascensions d'un bloc.
+      parameters:
+        - name: id
+          in: path
+          description: L'ID du bloc dont on veut récupérer les ascensions.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ClimbInclBoulder"
+        '404':
+          description: Aucune ascension n'a été trouvée pour ce bloc.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Climbs not found."
+  /boulder:
+    post:
+      summary: Crée un bloc
+      tags: 
+        - boulder
+      description: Crée un bloc.
+      requestBody:
+        description: Les valeurs du bloc à créer.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Boulder"
+      responses:
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Boulder"
+  /boulders:
+    get:
+      summary: Récupère la liste des blocs
+      tags: 
+        - boulder
+      description: Récupère la liste des blocs.
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Boulder"
+        '404':
+          description: Aucun bloc n'a été trouvé.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Boulders not found."
+  /boulder/{id}:
+    get:
+      summary: Récupère un bloc
+      tags: 
+        - boulder
+      description: Récupère un bloc.
+      parameters:
+        - name: id
+          in: path
+          description: L'ID du bloc à récupérer.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Boulder"
+        '404':
+          description: Le bloc n'a pas été trouvé.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Boulder not found."
+    patch:
+      summary: Met à jour les informations d'un bloc
+      tags: 
+        - boulder
+      description: Met à jour les informations d'un bloc.
+      parameters:
+        - name: id
+          in: path
+          description: L'ID du bloc à mettre à jour.
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Les valeurs à mettre à jour.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Boulder"
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Boulder"
+        '404':
+          description: Le bloc n'a pas été trouvé.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Boulder not found."
+    delete:
+      summary: Supprime un bloc
+      tags: 
+        - boulder
+      description: Supprime un bloc.
+      parameters:
+        - name: id
+          in: path
+          description: L'ID du bloc à supprimer.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: OK.
+        '404':
+          description: Le bloc n'a pas été trouvé.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Boulder not found."
+  # On récupère la liste des blocs d'un lieu
+  # Les paramètres sont facultatifs et les suivants:
+  # - place_id: l'ID du lieu dont on veut récupérer les blocs
+  # - sort: le champ sur lequel trier les blocs
+  # - type: Le type de blocs à récupérer
+  # - min_Grade: la difficulté minimale des blocs à récupérer
+  # - max_Grade: la difficulté maximale des blocs à récupérer
+  # - status: le statut des blocs à récupérer
+  # - size: le nombre de blocs à récupérer
+  # - offset: le nombre de groupe de "size" blocs à sauter
+  /boulders/place/{id}:
+    get:
+      summary: Récupère la liste des blocs d'un lieu
+      tags: 
+        - boulder
+      description: Récupère la liste des blocs d'un lieu correspondant aux filtres.
+      parameters:
+        - name: id
+          in: path
+          description: L'ID du lieu dont on veut récupérer les blocs.
+          required: true
+          schema:
+            type: integer
+        - name: sort
+          in: query
+          description: Le champ sur lequel trier les blocs.
+          required: false
+          schema:
+            type: string
+        - name: type
+          in: query
+          description: Le type de blocs à récupérer.
+          required: false
+          schema:
+            type: string
+        - name: min_Grade
+          in: query
+          description: La difficulté minimale des blocs à récupérer.
+          required: false
+          schema:
+            type: string
+        - name: max_Grade
+          in: query
+          description: La difficulté maximale des blocs à récupérer.
+          required: false
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: Le statut des blocs à récupérer.
+          required: false
+          schema:
+            type: string
+        - name: size
+          in: query
+          description: Le nombre de blocs à récupérer.
+          required: false
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: Le nombre de groupe de "size" blocs à sauter.
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Boulder"
+        '404':
+          description: Aucun bloc n'a été trouvé pour ce lieu.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Boulders not found."
+  # Cette requete a les memes parametres que la precedente
+  /boulders/place/{id}/count:
+    get:
+      summary: Récupère le nombre de blocs d'un lieu
+      tags: 
+        - boulder
+      description: Récupère le nombre de blocs d'un lieu correspondant aux filtres.
+      parameters:
+        - name: id
+          in: path
+          description: L'ID du lieu dont on veut récupérer le nombre de blocs.
+          required: true
+          schema:
+            type: integer
+        - name: sort
+          in: query
+          description: Le champ sur lequel trier les blocs.
+          required: false
+          schema:
+            type: string
+        - name: type
+          in: query
+          description: Le type de blocs à récupérer.
+          required: false
+          schema:
+            type: string
+        - name: min_Grade
+          in: query
+          description: La difficulté minimale des blocs à récupérer.
+          required: false
+          schema:
+            type: string
+        - name: max_Grade
+          in: query
+          description: La difficulté maximale des blocs à récupérer.
+          required: false
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: Le statut des blocs à récupérer.
+          required: false
+          schema:
+            type: string
+        - name: size
+          in: query
+          description: Le nombre de blocs à récupérer.
+          required: false
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: Le nombre de groupe de "size" blocs à sauter.
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 10
+        '404':
+          description: Aucun bloc n'a été trouvé pour ce lieu.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Boulders not found."
+  /place:
+    post:
+      summary: Crée un lieu
+      tags: 
+        - place
+      description: Crée un lieu.
+      requestBody:
+        description: Le lieu à créer.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Place"
+      responses:
+        '200':
+          description: Le lieu a été créé.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Place"
+  /places:
+    get:
+      summary: Récupère la liste des lieux
+      tags: 
+        - place
+      description: Récupère la liste des lieux correspondant aux filtres.
+      parameters:
+        - name: sort
+          in: query
+          description: Le champ sur lequel trier les lieux.
+          required: false
+          schema:
+            type: string
+        - name: type
+          in: query
+          description: Le type de lieux à récupérer.
+          required: false
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: Recherche par nom.
+          required: false
+          schema:
+            type: string
+        - name: location
+          in: query
+          description: Recherche par localisation.
+          required: false
+          schema:
+            type: string
+        - name: size
+          in: query
+          description: Le nombre de lieux à récupérer.
+          required: false
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: Le nombre de groupe de "size" lieux à sauter.
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Place"
+        '404':
+          description: Aucun lieu n'a été trouvé.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Places not found."
+  /places/count:
+    get:
+      summary: Récupère le nombre de lieux
+      tags: 
+        - place
+      description: Récupère le nombre de lieux correspondant aux filtres.
+      parameters:
+        - name: type
+          in: query
+          description: Le type de lieux à récupérer.
+          required: false
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: Recherche par nom.
+          required: false
+          schema:
+            type: string
+        - name: location
+          in: query
+          description: Recherche par localisation.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 10
+        '404':
+          description: Aucun lieu n'a été trouvé.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Places not found."
+  /place/{id}:
+    get:
+      summary: Récupère un lieu
+      tags: 
+        - place
+      description: Récupère un lieu.
+      parameters:
+        - name: id
+          in: path
+          description: L'ID du lieu à récupérer.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Place"
+        '404':
+          description: Aucun lieu n'a été trouvé pour cet ID.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Place not found."
+    patch:
+      summary: Modifie un lieu
+      tags: 
+        - place
+      description: Modifie un lieu.
+      parameters:
+        - name: id
+          in: path
+          description: L'ID du lieu à modifier.
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Le lieu à modifier.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Place"
+      responses:
+        '200':
+          description: Le lieu a été modifié.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Place"
+        '404':
+          description: Aucun lieu n'a été trouvé pour cet ID.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Place not found."
+    delete:
+      summary: Supprime un lieu
+      tags: 
+        - place
+      description: Supprime un lieu.
+      parameters:
+        - name: id
+          in: path
+          description: L'ID du lieu à supprimer.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Le lieu a été supprimé.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Place"
+        '404':
+          description: Aucun lieu n'a été trouvé pour cet ID.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Place not found."
+components:
+  schemas:
+    User:
+      type: object
+      required: 
+        - username
+        - email
+        - password
+      properties:
+        username:
+          type: string
+          example: "qjadoul"
+        email:
+          type: string
+          example: "qjadoul@gmail.com"
+        password:
+          type: string
+          example: "password"
+        firstName:
+          type: string
+          example: "Quentin"
+        lastName:
+          type: string
+          example: "Jadoul"
+    Activity:
+      type: object
+      required:
+        - name
+        - user_id
+        - date
+        - duration
+      properties:
+        name:
+          type: string
+          example: "Sortie en groupe"
+        description:
+          type: string
+          example: "Sortie en groupe à Fontainebleau"
+        user_id:
+          type: string
+          example: "1"
+        date:
+          type: string
+          format: date-time
+          example: "2021-01-01T00:00:00.000Z"
+        duration:
+          type: number
+          example: 120
+    ActivityInclUser:
+      type: object
+      required:
+        - name
+        - user_id
+        - date
+        - duration
+      properties:
+        name:
+          type: string
+          example: "Sortie en groupe"
+        description:
+          type: string
+          example: "Sortie en groupe à Fontainebleau"
+        user_id:
+          type: string
+          example: "1"
+        date:
+          type: string
+          format: date-time
+          example: "2021-01-01T00:00:00.000Z"
+        duration:
+          type: number
+          example: 120
+        user:
+          type: object
+          properties:
+            username:
+              type: string
+              example: "qjadoul"
+            firstName:
+              type: string
+              example: "Quentin"
+            lastName:
+              type: string
+              example: "Jadoul"
+    Climb:
+      type: object
+      required:
+        - climb_id
+        - nb_attempts
+        - boulder_id
+        - activity_id
+      properties:
+        climb_id:
+          type: integer
+          example: 1
+        nb_attempts:
+          type: integer
+          example: 3
+        style:
+          type: string
+          example: "Flash"
+        boulder_id:
+          type: integer
+          example: 1
+        activity_id:
+          type: integer
+          example: 1
+    ClimbInclBoulder:
+      type: object
+      required:
+        - climb_id
+        - nb_attempts
+        - boulder_id
+        - activity_id
+      properties:
+        climb_id:
+          type: integer
+          example: 1
+        nb_attempts:
+          type: integer
+          example: 3
+        style:
+          type: string
+          example: "Flash"
+        boulder_id:
+          type: integer
+          example: 1
+        activity_id:
+          type: integer
+          example: 1
+        boulder:
+          type: object
+          properties:
+            place_id:
+              type: string
+              example: "1"
+            grade:
+              type: string
+              example: "6A"
+            grade_int:
+              type: string
+              example: "6"
+    Boulder:
+      type: object
+      required:
+        - name
+        - grade
+        - grade_int
+        - status
+        - place_id
+      properties:
+        boulder_id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Le surplomb"
+        grade:
+          type: string
+          example: "6A"
+        grade_int:
+          type: string
+          example: "6"
+        status:
+          type: boolean
+          example: true
+        place_id:
+          type: string
+          example: "1"
+        type:
+          type: string
+          example: "Devers"
+    Place:
+      type: object
+      required:
+        - name
+        - latitude
+        - location
+        - type
+      properties:
+        place_id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Fontainebleau"
+        location:
+          type: string
+          example: "France"
+        type:
+          type: string
+          example: "Exterieur"
+        created_at:
+          type: string
+          format: date-time
+          example: "2021-01-01T00:00:00.000Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2021-01-01T00:00:00.000Z"

@@ -95,6 +95,11 @@ exports.getActivitiesByUser = function(req, res) {
         order,
         where: {
             user_id: user_id
+        },
+        include:
+        {   
+            model: db.user,
+            attributes: ['username', 'firstname', 'lastname']
         }
     })
     .then(function (activities) {
