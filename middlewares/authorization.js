@@ -2,7 +2,7 @@ const db = require('../models/index.js')
 
 const jwt = require('jsonwebtoken')
 const jwtKey = 'my_secret_key'
-const jwtExpirySeconds = 300
+const jwtExpirySeconds = 3000
 
 // Login a user
 exports.login = function(req, res) {

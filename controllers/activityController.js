@@ -5,6 +5,11 @@ exports.createActivity = function(req, res) {
     db.user.findOne({
         where: {
             user_id: req.body.user_id
+        },
+        include:
+        {   
+            model: db.user,
+            attributes: ['username', 'firstname', 'lastname']
         }
     })
     .then(function (user) {
