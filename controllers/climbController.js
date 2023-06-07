@@ -166,7 +166,7 @@ exports.deleteClimb = function(req, res) {
         if (!climb) {
             return res.status(404).send({ message: "Climb not found" });
         } else {
-            return res.sendStatus(200);
+            return res.status(200).send({ message: "Climb deleted" });
         }
     })
 }
